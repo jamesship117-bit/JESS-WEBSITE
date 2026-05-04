@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="[YOUR AGENCY NAME] — futuristic digital studio building high-performance websites."
+    />
+    <title>[YOUR AGENCY NAME] — Digital Studio</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Syne:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="page page--home" data-page="home">
+    <!-- BRAND_PLACEHOLDER: [YOUR AGENCY NAME] -->
+
+    <div class="page-bg" aria-hidden="true">
+      <div class="page-bg__grid"></div>
+      <div class="page-bg__dots"></div>
+      <div class="page-bg__noise"></div>
+    </div>
+
+    <div class="custom-cursor" aria-hidden="true">
+      <div class="custom-cursor__dot"></div>
+      <div class="custom-cursor__ring"></div>
+    </div>
+
+    <header id="site-header" class="site-header"></header>
+
+    <main id="main-content">
+      <!-- Hero: full viewport, staggered entrance via .hero-entrance -->
+      <section class="hero hero-entrance" aria-labelledby="hero-title">
+        <div class="hero__glow" aria-hidden="true"></div>
+        <div class="hero__float hero__float--1" aria-hidden="true"></div>
+        <div class="hero__float hero__float--2" aria-hidden="true"></div>
+        <div class="hero__inner">
+          <p class="hero__eyebrow">[YOUR AGENCY NAME]</p>
+          <h1 id="hero-title" class="hero__title">
+            <span class="line">WE BUILD THE FUTURE.</span>
+            <span class="line">ONE PIXEL AT A TIME.</span>
+          </h1>
+          <p class="hero__sub">
+            A digital studio crafting high-performance websites and experiences that set you apart.
+          </p>
+          <div class="hero__actions btn-row">
+            <a class="btn btn--primary btn--magnetic" href="portfolio.html">See Our Work</a>
+            <a class="btn btn--magnetic" href="contact.html">Start a Project</a>
+          </div>
+        </div>
+        <div class="hero__scroll" aria-hidden="true">
+          <span>Scroll</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </div>
+      </section>
+
+      <svg class="section-divider" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+        <path
+          fill="var(--bg-secondary)"
+          d="M0,48 C240,8 480,88 720,48 C960,8 1200,88 1440,48 L1440,80 L0,80 Z"
+        />
+      </svg>
+
+      <!-- Services snapshot -->
+      <section class="section" style="background: var(--bg-secondary)" aria-labelledby="services-snap-title">
+        <div class="container">
+          <header class="reveal">
+            <span class="section__eyebrow">Capabilities</span>
+            <h2 id="services-snap-title" class="section__title">Built for momentum</h2>
+            <p class="section__lead">
+              Strategy, craft, and launch support — everything you need to ship a standout digital presence.
+            </p>
+          </header>
+          <div class="card-grid card-grid--3 reveal-stagger" style="margin-top: 2rem">
+            <article class="glass glass--lift service-card">
+              <svg class="service-card__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" aria-hidden="true">
+                <path d="M8 40V18l16-10 16 10v22" stroke-width="2" />
+                <path d="M20 40V26h8v14" stroke-width="2" />
+              </svg>
+              <h3 class="service-card__title">Strategy &amp; Design</h3>
+              <p class="service-card__text">Positioning, UX, and visual systems shaped around your goals.</p>
+              <a class="service-card__link" href="services.html"
+                >Learn More <span aria-hidden="true">→</span></a
+              >
+            </article>
+            <article class="glass glass--lift service-card">
+              <svg class="service-card__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" aria-hidden="true">
+                <path d="M10 36V12h28v24H10z" stroke-width="2" />
+                <path d="M10 18h28" stroke-width="2" />
+                <path d="M18 26h12M18 30h8" stroke-width="2" />
+              </svg>
+              <h3 class="service-card__title">Development</h3>
+              <p class="service-card__text">Fast, accessible front-ends engineered for real-world performance.</p>
+              <a class="service-card__link" href="services.html"
+                >Learn More <span aria-hidden="true">→</span></a
+              >
+            </article>
+            <article class="glass glass--lift service-card">
+              <svg class="service-card__icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" aria-hidden="true">
+                <circle cx="24" cy="24" r="14" stroke-width="2" />
+                <path d="M24 16v8l6 4" stroke-width="2" />
+              </svg>
+              <h3 class="service-card__title">Ongoing Support</h3>
+              <p class="service-card__text">Iteration, monitoring, and proactive improvements after launch.</p>
+              <a class="service-card__link" href="services.html"
+                >Learn More <span aria-hidden="true">→</span></a
+              >
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-divider--diagonal" aria-hidden="true"></div>
+
+      <!-- Featured work -->
+      <section class="section" aria-labelledby="featured-title">
+        <div class="container">
+          <header class="reveal">
+            <span class="section__eyebrow">Portfolio</span>
+            <h2 id="featured-title" class="section__title">SELECTED WORKS</h2>
+            <p class="section__lead">A glimpse at recent launches — precision-built, never templated.</p>
+          </header>
+          <div class="card-grid" style="margin-top: 2rem; grid-template-columns: 1fr; gap: 1.25rem">
+            <article class="glass work-card reveal" style="min-height: 320px">
+              <div class="work-card__media">
+                <img
+                  src="https://placehold.co/1200x700/0d0d1f/00f0ff/png?text=[PROJECT+ALPHA]"
+                  alt="[PLACEHOLDER] Project Alpha preview"
+                  width="1200"
+                  height="700"
+                  loading="lazy"
+                />
+              </div>
+              <div class="work-card__body">
+                <h3 class="service-card__title" style="margin: 0">Project Alpha</h3>
+                <div class="work-card__tags" aria-label="Project tags">
+                  <span class="tag">E-Commerce</span>
+                  <span class="tag">Automotive</span>
+                  <span class="tag">Custom Build</span>
+                </div>
+              </div>
+              <div class="work-card__overlay">
+                <a class="btn btn--primary btn--magnetic" href="portfolio.html">View Project</a>
+              </div>
+            </article>
+            <div style="display: grid; gap: 1.25rem">
+              <article class="glass work-card reveal" style="min-height: 280px">
+                <div class="work-card__media">
+                  <img
+                    src="https://placehold.co/1200x600/0d0d1f/7c3aed/png?text=[PROJECT+BETA]"
+                    alt="[PLACEHOLDER] Project Beta preview"
+                    width="1200"
+                    height="600"
+                    loading="lazy"
+                  />
+                </div>
+                <div class="work-card__body">
+                  <h3 class="service-card__title" style="margin: 0">Project Beta</h3>
+                  <div class="work-card__tags">
+                    <span class="tag">Service Business</span>
+                    <span class="tag">Brand System</span>
+                  </div>
+                </div>
+                <div class="work-card__overlay">
+                  <a class="btn btn--primary btn--magnetic" href="portfolio.html">View Project</a>
+                </div>
+              </article>
+              <article class="glass work-card reveal" style="min-height: 280px">
+                <div class="work-card__media">
+                  <img
+                    src="https://placehold.co/1200x600/050510/00f0ff/png?text=[PROJECT+GAMMA]"
+                    alt="[PLACEHOLDER] Project Gamma preview"
+                    width="1200"
+                    height="600"
+                    loading="lazy"
+                  />
+                </div>
+                <div class="work-card__body">
+                  <h3 class="service-card__title" style="margin: 0">Project Gamma</h3>
+                  <div class="work-card__tags">
+                    <span class="tag">Custom</span>
+                    <span class="tag">WebGL Accents</span>
+                  </div>
+                </div>
+                <div class="work-card__overlay">
+                  <a class="btn btn--primary btn--magnetic" href="portfolio.html">View Project</a>
+                </div>
+              </article>
+            </div>
+          </div>
+          <div class="text-center reveal" style="margin-top: 2rem">
+            <a class="btn btn--magnetic" href="portfolio.html">View All Work</a>
+          </div>
+        </div>
+      </section>
+
+      <svg class="section-divider section-divider--flip" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+        <path
+          fill="var(--bg-secondary)"
+          d="M0,32 C200,72 400,-8 720,32 C1040,72 1240,-8 1440,32 L1440,0 L0,0 Z"
+        />
+      </svg>
+
+      <!-- Process -->
+      <section class="section process" aria-labelledby="process-title">
+        <div class="container">
+          <header class="reveal text-center" style="max-width: 640px; margin-inline: auto">
+            <span class="section__eyebrow">How we work</span>
+            <h2 id="process-title" class="section__title">From signal to launch</h2>
+            <p class="section__lead" style="margin-inline: auto">
+              A tight loop of discovery, design, engineering, and go-live — transparent at every step.
+            </p>
+          </header>
+          <div class="process__track reveal-stagger" style="margin-top: 3rem">
+            <div class="process-step">
+              <div class="process-step__num">01</div>
+              <h3 class="process-step__title">Discovery</h3>
+              <p class="process-step__text">Goals, audiences, and technical constraints mapped early.</p>
+            </div>
+            <div class="process-step">
+              <div class="process-step__num">02</div>
+              <h3 class="process-step__title">Design</h3>
+              <p class="process-step__text">High-fidelity UI with motion and content systems locked in.</p>
+            </div>
+            <div class="process-step">
+              <div class="process-step__num">03</div>
+              <h3 class="process-step__title">Build</h3>
+              <p class="process-step__text">Semantic markup, resilient CSS, and lean JavaScript.</p>
+            </div>
+            <div class="process-step">
+              <div class="process-step__num">04</div>
+              <h3 class="process-step__title">Launch</h3>
+              <p class="process-step__text">Performance checks, analytics, and a confident handoff.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA banner -->
+      <section class="cta-banner reveal" aria-labelledby="cta-title">
+        <div class="cta-banner__bg" aria-hidden="true"></div>
+        <div class="cta-banner__inner container">
+          <h2 id="cta-title">Ready to stand out online?</h2>
+          <a class="btn btn--primary btn--magnetic btn--glow" href="contact.html">Let's Talk</a>
+        </div>
+      </section>
+    </main>
+
+    <footer id="site-footer" class="site-footer"></footer>
+
+    <script src="components.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>

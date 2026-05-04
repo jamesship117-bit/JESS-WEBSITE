@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Client Area — preview dashboard for [YOUR AGENCY NAME] clients." />
+    <title>Client Area — [YOUR AGENCY NAME]</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Syne:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="page page--client-area" data-page="client-area">
+    <!-- BRAND_PLACEHOLDER: [YOUR AGENCY NAME] -->
+
+    <div class="page-bg" aria-hidden="true">
+      <div class="page-bg__grid"></div>
+      <div class="page-bg__dots"></div>
+      <div class="page-bg__noise"></div>
+    </div>
+
+    <div class="custom-cursor" aria-hidden="true">
+      <div class="custom-cursor__dot"></div>
+      <div class="custom-cursor__ring"></div>
+    </div>
+
+    <header id="site-header" class="site-header"></header>
+
+    <main id="main-content">
+      <section class="page-hero" aria-labelledby="client-title">
+        <div class="container">
+          <header class="reveal">
+            <span class="section__eyebrow">Clients</span>
+            <h1 id="client-title" class="section__title section__title--page">CLIENT AREA</h1>
+            <p class="section__lead">Manage your projects, notes, and communication in one place.</p>
+          </header>
+
+          <div class="banner-info reveal" role="status">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" stroke-width="2" />
+              <path d="M12 8v5M12 16h.01" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            <p style="margin: 0; color: var(--text-primary)">
+              This area will require login in a future update. Currently open for preview purposes.
+            </p>
+          </div>
+
+          <div class="dashboard reveal">
+            <div class="dashboard__tabs" role="tablist" aria-label="Client dashboard sections">
+              <button
+                type="button"
+                class="tab-btn is-active"
+                role="tab"
+                aria-selected="true"
+                aria-controls="panel-dashboard"
+                id="tab-dashboard"
+                data-tab-target="dashboard"
+              >
+                Dashboard
+              </button>
+              <button
+                type="button"
+                class="tab-btn"
+                role="tab"
+                aria-selected="false"
+                aria-controls="panel-projects"
+                id="tab-projects"
+                data-tab-target="projects"
+              >
+                My Projects
+              </button>
+              <button
+                type="button"
+                class="tab-btn"
+                role="tab"
+                aria-selected="false"
+                aria-controls="panel-notes"
+                id="tab-notes"
+                data-tab-target="notes"
+              >
+                Notes
+              </button>
+              <button
+                type="button"
+                class="tab-btn"
+                role="tab"
+                aria-selected="false"
+                aria-controls="panel-messages"
+                id="tab-messages"
+                data-tab-target="messages"
+              >
+                Messages
+              </button>
+              <button
+                type="button"
+                class="tab-btn"
+                role="tab"
+                aria-selected="false"
+                aria-controls="panel-settings"
+                id="tab-settings"
+                data-tab-target="settings"
+              >
+                Settings
+              </button>
+            </div>
+
+            <div class="dashboard__panels">
+              <!-- Dashboard -->
+              <div
+                class="tab-panel is-active glass glass--static"
+                role="tabpanel"
+                id="panel-dashboard"
+                aria-labelledby="tab-dashboard"
+                data-tab-panel="dashboard"
+              >
+                <h2 class="service-card__title" style="margin-top: 0">Welcome back, [Client Name]</h2>
+                <p class="section__lead" style="margin-bottom: 1.5rem">
+                  [PLACEHOLDER] Snapshot of your active workstreams with [YOUR AGENCY NAME].
+                </p>
+                <div class="stat-grid">
+                  <article class="glass glass--static stat-card">
+                    <p class="stat-card__value">2</p>
+                    <p class="stat-card__label">Active Projects</p>
+                  </article>
+                  <article class="glass glass--static stat-card">
+                    <p class="stat-card__value">1</p>
+                    <p class="stat-card__label">Pending Reviews</p>
+                  </article>
+                  <article class="glass glass--static stat-card">
+                    <p class="stat-card__value">3</p>
+                    <p class="stat-card__label">Unread Messages</p>
+                  </article>
+                </div>
+                <h3 class="section__eyebrow" style="margin-top: 2rem; letter-spacing: 0.12em">Recent activity</h3>
+                <ul class="activity-list">
+                  <li>
+                    <span>Homepage design uploaded</span>
+                    <time datetime="2026-05-04">2 hours ago</time>
+                  </li>
+                  <li>
+                    <span>Development milestone: navigation shell</span>
+                    <time datetime="2026-05-03">Yesterday</time>
+                  </li>
+                  <li>
+                    <span>Comment thread: hero imagery direction</span>
+                    <time datetime="2026-05-02">2 days ago</time>
+                  </li>
+                  <li>
+                    <span>Invoice [INV-000] marked paid</span>
+                    <time datetime="2026-05-01">3 days ago</time>
+                  </li>
+                  <li>
+                    <span>Kickoff notes published to workspace</span>
+                    <time datetime="2026-04-28">Last week</time>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Projects -->
+              <div
+                class="tab-panel glass glass--static"
+                role="tabpanel"
+                id="panel-projects"
+                aria-labelledby="tab-projects"
+                data-tab-panel="projects"
+                hidden
+              >
+                <h2 class="service-card__title" style="margin-top: 0">My Projects</h2>
+                <div style="display: grid; gap: 1rem; margin-top: 1rem">
+                  <article class="glass glass--static" style="padding: 1.25rem">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.75rem">
+                      <h3 class="portfolio-item__name" style="margin: 0">Aurora Commerce</h3>
+                      <span class="badge badge--progress">In Progress</span>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0.35rem 0 0">
+                      Last updated: <time datetime="2026-05-04">May 4, 2026</time>
+                    </p>
+                    <div class="progress" aria-hidden="true">
+                      <div class="progress__bar" style="width: 62%"></div>
+                    </div>
+                    <button type="button" class="btn btn--magnetic" style="margin-top: 1rem">View Details</button>
+                  </article>
+                  <article class="glass glass--static" style="padding: 1.25rem">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.75rem">
+                      <h3 class="portfolio-item__name" style="margin: 0">Signal Foundry Site</h3>
+                      <span class="badge badge--review">Review</span>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0.35rem 0 0">
+                      Last updated: <time datetime="2026-05-02">May 2, 2026</time>
+                    </p>
+                    <div class="progress" aria-hidden="true">
+                      <div class="progress__bar" style="width: 88%"></div>
+                    </div>
+                    <button type="button" class="btn btn--magnetic" style="margin-top: 1rem">View Details</button>
+                  </article>
+                  <article class="glass glass--static" style="padding: 1.25rem">
+                    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.75rem">
+                      <h3 class="portfolio-item__name" style="margin: 0">Vertex Summit Hub</h3>
+                      <span class="badge badge--done">Complete</span>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0.35rem 0 0">
+                      Last updated: <time datetime="2026-04-20">Apr 20, 2026</time>
+                    </p>
+                    <div class="progress" aria-hidden="true">
+                      <div class="progress__bar" style="width: 100%"></div>
+                    </div>
+                    <button type="button" class="btn btn--magnetic" style="margin-top: 1rem">View Details</button>
+                  </article>
+                </div>
+              </div>
+
+              <!-- Notes -->
+              <div
+                class="tab-panel glass glass--static"
+                role="tabpanel"
+                id="panel-notes"
+                aria-labelledby="tab-notes"
+                data-tab-panel="notes"
+                hidden
+              >
+                <h2 class="service-card__title" style="margin-top: 0">Notes</h2>
+                <p class="section__lead">Saved locally in your browser (localStorage) for this preview.</p>
+                <form id="note-form" class="note-form glass glass--static" style="padding: 1rem; margin-bottom: 1rem">
+                  <div class="field">
+                    <label for="note-title">Note title</label>
+                    <input id="note-title" name="note-title" type="text" autocomplete="off" placeholder="[TITLE]" />
+                    <span class="field__error" aria-live="polite"></span>
+                  </div>
+                  <div class="field">
+                    <label for="note-body">Note body</label>
+                    <textarea id="note-body" name="note-body" rows="4" placeholder="[NOTE CONTENT]"></textarea>
+                    <span class="field__error" aria-live="polite"></span>
+                  </div>
+                  <button type="submit" class="btn btn--primary btn--magnetic">Add Note</button>
+                </form>
+                <div class="notes-layout">
+                  <div id="notes-list" class="notes-list" aria-label="Saved notes"></div>
+                  <div id="note-detail" class="note-editor glass glass--static">
+                    <p style="margin: 0; color: var(--text-secondary)">Select a note to read it here.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Messages -->
+              <div
+                class="tab-panel glass glass--static"
+                role="tabpanel"
+                id="panel-messages"
+                aria-labelledby="tab-messages"
+                data-tab-panel="messages"
+                hidden
+              >
+                <h2 class="service-card__title" style="margin-top: 0">Messages</h2>
+                <p class="section__lead">[PLACEHOLDER] Thread preview — no backend attached.</p>
+                <div id="chat-thread" class="chat" aria-label="Mock conversation">
+                  <div class="chat-bubble chat-bubble--agency">
+                    Hey [Client Name] — sharing the updated hero concepts in the workspace. Let us know which direction
+                    feels closest.
+                  </div>
+                  <div class="chat-bubble chat-bubble--client">
+                    Loving direction B. Can we push the typography even larger on desktop?
+                  </div>
+                  <div class="chat-bubble chat-bubble--agency">
+                    Absolutely — we'll stage a v2 with oversized display type and tighter rhythm.
+                  </div>
+                </div>
+                <form id="chat-form" class="chat-form">
+                  <label class="visually-hidden" for="chat-input">Message</label>
+                  <input id="chat-input" type="text" placeholder="[TYPE A MESSAGE]" autocomplete="off" />
+                  <button type="submit" class="btn btn--primary btn--magnetic">Send</button>
+                </form>
+              </div>
+
+              <!-- Settings -->
+              <div
+                class="tab-panel glass glass--static"
+                role="tabpanel"
+                id="panel-settings"
+                aria-labelledby="tab-settings"
+                data-tab-panel="settings"
+                hidden
+              >
+                <h2 class="service-card__title" style="margin-top: 0">Settings</h2>
+                <p class="section__lead">[PLACEHOLDER] Profile fields — preview only.</p>
+                <form id="settings-form" class="glass glass--static" style="padding: 1.25rem; display: grid; gap: 1rem">
+                  <div class="field">
+                    <label for="set-name">Name</label>
+                    <input id="set-name" type="text" value="[Client Name]" autocomplete="name" />
+                  </div>
+                  <div class="field">
+                    <label for="set-email">Email</label>
+                    <input id="set-email" type="email" value="client@[youragency].com" autocomplete="email" />
+                  </div>
+                  <div class="field">
+                    <label for="set-company">Company</label>
+                    <input id="set-company" type="text" value="[COMPANY NAME]" autocomplete="organization" />
+                  </div>
+                  <div class="field">
+                    <label for="set-contact">Preferred contact method</label>
+                    <select id="set-contact">
+                      <option>Email</option>
+                      <option>Phone</option>
+                      <option>Slack / Chat</option>
+                    </select>
+                  </div>
+                  <button type="submit" class="btn btn--primary btn--magnetic">Save Changes</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="site-footer" class="site-footer"></footer>
+
+    <script src="components.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>

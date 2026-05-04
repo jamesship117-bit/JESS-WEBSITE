@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Portfolio — selected work by [YOUR AGENCY NAME]." />
+    <title>Portfolio — [YOUR AGENCY NAME]</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Syne:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="page page--portfolio" data-page="portfolio">
+    <!-- BRAND_PLACEHOLDER: [YOUR AGENCY NAME] -->
+
+    <div class="page-bg" aria-hidden="true">
+      <div class="page-bg__grid"></div>
+      <div class="page-bg__dots"></div>
+      <div class="page-bg__noise"></div>
+    </div>
+
+    <div class="custom-cursor" aria-hidden="true">
+      <div class="custom-cursor__dot"></div>
+      <div class="custom-cursor__ring"></div>
+    </div>
+
+    <header id="site-header" class="site-header"></header>
+
+    <main id="main-content">
+      <section class="page-hero" aria-labelledby="portfolio-title">
+        <div class="container">
+          <header class="reveal">
+            <span class="section__eyebrow">Portfolio</span>
+            <h1 id="portfolio-title" class="section__title section__title--page">OUR WORK</h1>
+            <p class="section__lead">
+              Every project is built from scratch. No templates. No shortcuts.
+            </p>
+          </header>
+
+          <div class="filter-bar reveal" id="portfolio-filters" role="group" aria-label="Filter projects">
+            <button type="button" class="filter-btn is-active" data-filter="all">All</button>
+            <button type="button" class="filter-btn" data-filter="automotive">Automotive</button>
+            <button type="button" class="filter-btn" data-filter="service-business">Service Business</button>
+            <button type="button" class="filter-btn" data-filter="ecommerce">E-Commerce</button>
+            <button type="button" class="filter-btn" data-filter="custom">Custom</button>
+          </div>
+
+          <!--
+            Future: each card could link to project-detail.html?slug=[slug]
+            Placeholder href="#" below — replace when case studies ship.
+          -->
+          <div class="portfolio-masonry">
+            <article class="portfolio-item reveal glass" data-category="automotive">
+              <div class="portfolio-item__thumb">
+                <img
+                  src="https://placehold.co/900x700/0d0d1f/00f0ff/png?text=Nebula+Motive"
+                  alt="[PLACEHOLDER] Nebula Motive project"
+                  width="900"
+                  height="700"
+                  loading="lazy"
+                />
+                <div class="portfolio-item__hover">
+                  <a class="btn btn--primary btn--magnetic" href="#">View Project →</a>
+                </div>
+              </div>
+              <div class="portfolio-item__bar">
+                <h2 class="portfolio-item__name">Nebula Motive</h2>
+                <div class="work-card__tags">
+                  <span class="tag">Automotive</span>
+                  <span class="tag">Custom Build</span>
+                </div>
+                <p class="portfolio-item__desc">Immersive brand site with configurators and motion-led storytelling.</p>
+              </div>
+            </article>
+
+            <article class="portfolio-item reveal glass" data-category="ecommerce">
+              <div class="portfolio-item__thumb">
+                <img
+                  src="https://placehold.co/600x400/050510/7c3aed/png?text=Astra+Goods"
+                  alt="[PLACEHOLDER] Astra Goods project"
+                  width="600"
+                  height="400"
+                  loading="lazy"
+                />
+                <div class="portfolio-item__hover">
+                  <a class="btn btn--primary btn--magnetic" href="#">View Project →</a>
+                </div>
+              </div>
+              <div class="portfolio-item__bar">
+                <h2 class="portfolio-item__name">Astra Goods</h2>
+                <div class="work-card__tags">
+                  <span class="tag">E-Commerce</span>
+                </div>
+                <p class="portfolio-item__desc">Headless storefront with editorial merchandising flows.</p>
+              </div>
+            </article>
+
+            <article class="portfolio-item reveal glass" data-category="service-business">
+              <div class="portfolio-item__thumb">
+                <img
+                  src="https://placehold.co/700x900/0d0d1f/00f0ff/png?text=Helio+Legal"
+                  alt="[PLACEHOLDER] Helio Legal project"
+                  width="700"
+                  height="900"
+                  loading="lazy"
+                />
+                <div class="portfolio-item__hover">
+                  <a class="btn btn--primary btn--magnetic" href="#">View Project →</a>
+                </div>
+              </div>
+              <div class="portfolio-item__bar">
+                <h2 class="portfolio-item__name">Helio Legal</h2>
+                <div class="work-card__tags">
+                  <span class="tag">Service Business</span>
+                </div>
+                <p class="portfolio-item__desc">Trust-forward marketing site with lead routing and CMS.</p>
+              </div>
+            </article>
+
+            <article class="portfolio-item reveal glass" data-category="custom">
+              <div class="portfolio-item__thumb">
+                <img
+                  src="https://placehold.co/900x600/050510/7c3aed/png?text=Pulse+Labs"
+                  alt="[PLACEHOLDER] Pulse Labs project"
+                  width="900"
+                  height="600"
+                  loading="lazy"
+                />
+                <div class="portfolio-item__hover">
+                  <a class="btn btn--primary btn--magnetic" href="#">View Project →</a>
+                </div>
+              </div>
+              <div class="portfolio-item__bar">
+                <h2 class="portfolio-item__name">Pulse Labs</h2>
+                <div class="work-card__tags">
+                  <span class="tag">Custom</span>
+                  <span class="tag">Product</span>
+                </div>
+                <p class="portfolio-item__desc">Launch narrative, docs hub, and interactive product tour.</p>
+              </div>
+            </article>
+
+            <article class="portfolio-item reveal glass" data-category="automotive">
+              <div class="portfolio-item__thumb">
+                <img
+                  src="https://placehold.co/640x420/0d0d1f/00f0ff/png?text=Drift+Co"
+                  alt="[PLACEHOLDER] Drift Co project"
+                  width="640"
+                  height="420"
+                  loading="lazy"
+                />
+                <div class="portfolio-item__hover">
+                  <a class="btn btn--primary btn--magnetic" href="#">View Project →</a>
+                </div>
+              </div>
+              <div class="portfolio-item__bar">
+                <h2 class="portfolio-item__name">Drift Co</h2>
+                <div class="work-card__tags">
+                  <span class="tag">Automotive</span>
+                </div>
+                <p class="portfolio-item__desc">Event microsite with live telemetry-inspired visuals.</p>
+              </div>
+            </article>
+
+            <article class="portfolio-item reveal glass" data-category="ecommerce">
+              <div class="portfolio-item__thumb">
+                <img
+                  src="https://placehold.co/800x800/050510/7c3aed/png?text=Lumen+Supply"
+                  alt="[PLACEHOLDER] Lumen Supply project"
+                  width="800"
+                  height="800"
+                  loading="lazy"
+                />
+                <div class="portfolio-item__hover">
+                  <a class="btn btn--primary btn--magnetic" href="#">View Project →</a>
+                </div>
+              </div>
+              <div class="portfolio-item__bar">
+                <h2 class="portfolio-item__name">Lumen Supply</h2>
+                <div class="work-card__tags">
+                  <span class="tag">E-Commerce</span>
+                </div>
+                <p class="portfolio-item__desc">B2B catalog with tiered pricing and quick reorder flows.</p>
+              </div>
+            </article>
+
+            <article class="portfolio-item reveal glass" data-category="service-business">
+              <div class="portfolio-item__thumb">
+                <img
+                  src="https://placehold.co/720x520/0d0d1f/00f0ff/png?text=Northwind+Care"
+                  alt="[PLACEHOLDER] Northwind Care project"
+                  width="720"
+                  height="520"
+                  loading="lazy"
+                />
+                <div class="portfolio-item__hover">
+                  <a class="btn btn--primary btn--magnetic" href="#">View Project →</a>
+                </div>
+              </div>
+              <div class="portfolio-item__bar">
+                <h2 class="portfolio-item__name">Northwind Care</h2>
+                <div class="work-card__tags">
+                  <span class="tag">Service Business</span>
+                </div>
+                <p class="portfolio-item__desc">Accessibility-first redesign with appointment scheduling.</p>
+              </div>
+            </article>
+
+            <article class="portfolio-item reveal glass" data-category="custom">
+              <div class="portfolio-item__thumb">
+                <img
+                  src="https://placehold.co/960x640/050510/00f0ff/png?text=Vertex+Summit"
+                  alt="[PLACEHOLDER] Vertex Summit project"
+                  width="960"
+                  height="640"
+                  loading="lazy"
+                />
+                <div class="portfolio-item__hover">
+                  <a class="btn btn--primary btn--magnetic" href="#">View Project →</a>
+                </div>
+              </div>
+              <div class="portfolio-item__bar">
+                <h2 class="portfolio-item__name">Vertex Summit</h2>
+                <div class="work-card__tags">
+                  <span class="tag">Custom</span>
+                </div>
+                <p class="portfolio-item__desc">Conference identity web hub with speaker grid and agenda.</p>
+              </div>
+            </article>
+
+            <article class="portfolio-item reveal glass" data-category="ecommerce">
+              <div class="portfolio-item__thumb">
+                <img
+                  src="https://placehold.co/680x680/0d0d1f/7c3aed/png?text=Echo+Audio"
+                  alt="[PLACEHOLDER] Echo Audio project"
+                  width="680"
+                  height="680"
+                  loading="lazy"
+                />
+                <div class="portfolio-item__hover">
+                  <a class="btn btn--primary btn--magnetic" href="#">View Project →</a>
+                </div>
+              </div>
+              <div class="portfolio-item__bar">
+                <h2 class="portfolio-item__name">Echo Audio</h2>
+                <div class="work-card__tags">
+                  <span class="tag">E-Commerce</span>
+                </div>
+                <p class="portfolio-item__desc">Premium product pages with immersive soundwave motifs.</p>
+              </div>
+            </article>
+          </div>
+
+          <p class="reveal" style="margin-top: 2rem; color: var(--text-secondary); font-size: 0.9rem">
+            [PLACEHOLDER] Case study routes are commented in the source — swap <code style="color:var(--accent-cyan)">href=\"#\"</code> when
+            <span class="visually-hidden">detail pages</span> ship.
+          </p>
+        </div>
+      </section>
+
+      <section class="cta-banner reveal" aria-labelledby="portfolio-cta">
+        <div class="cta-banner__bg" aria-hidden="true"></div>
+        <div class="cta-banner__inner container">
+          <h2 id="portfolio-cta">Want something this sharp?</h2>
+          <a class="btn btn--primary btn--magnetic" href="contact.html">Start a Project</a>
+        </div>
+      </section>
+    </main>
+
+    <footer id="site-footer" class="site-footer"></footer>
+
+    <script src="components.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
