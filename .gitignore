@@ -1,2 +1,5 @@
 # Local Cursor / IDE project config (keep out of remote per plan default)
 .cursor/
+
+# Local bare repo used as `origin` for offline push (replace URL with your host when ready)
+mirror-origin.git/
