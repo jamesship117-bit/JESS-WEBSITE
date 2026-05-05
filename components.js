@@ -1,16 +1,34 @@
 /**
  * components.js — Injects shared navigation and footer on every page.
  * BRAND_PLACEHOLDER: [YOUR AGENCY NAME] — search project for this comment + logo strings.
+ *
+ * Session mirror: when auth.js is not loaded, reads agency_session / agency_users
+ * using the SAME keys and expiry rules as auth.js — keep in sync with auth.js.
  */
-
 (function () {
   "use strict";
 
-  var NAV_LINKS = [
+  var STORAGE_SESSION = "agency_session";
+  var STORAGE_USERS = "agency_users";
+  var STORAGE_SETTINGS = "agency_settings";
+
+  var NAV_LINKS_FULL = [
     { href: "index.html", label: "Home", id: "home" },
     { href: "portfolio.html", label: "Portfolio", id: "portfolio" },
     { href: "services.html", label: "Services", id: "services" },
-    { href: "client-area.html", label: "Client Area", id: "client-area" },
+    { href: "client-area.html", label: "Client Area", id: "client-area", guestHref: "login.html" },
+    { href: "contact.html", label: "Contact", id: "contact" },
+  ];
+
+  var NAV_LINKS_AUTH = [
+    { href: "index.html", label: "Home", id: "home" },
+    { href: "portfolio.html", label: "Portfolio", id: "portfolio" },
+    { href: "services.html", label: "Services", id: "services" },
+    { href: "contact.html", label: "Contact", id: "contact" },
+  ];
+
+  var NAV_LINKS_AUTH_PAGE = [
+    { href: "index.html", label: "Home", id: "home" },
     { href: "contact.html", label: "Contact", id: "contact" },
   ];
 
@@ -19,57 +37,186 @@
     return (body && body.getAttribute("data-page")) || "home";
   }
 
-  function renderDesktopNav() {
-    var current = getCurrentPageId();
-    return NAV_LINKS.map(function (link) {
-      var active = link.id === current ? " is-active" : "";
-      var aria = link.id === current ? ' aria-current="page"' : "";
-      return (
-        '<a href="' +
-        link.href +
-        '" class="' +
-        active.trim() +
-        '"' +
-        aria +
-        ' data-nav-link>' +
-        link.label +
-        "</a>"
-      );
-    }).join("");
+  function mirrorGetSession() {
+    try {
+      var raw = localStorage.getItem(STORAGE_SESSION);
+      if (!raw) {
+        return null;
+      }
+      var s = JSON.parse(raw);
+      if (!s || !s.userId || !s.expiresAt) {
+        return null;
+      }
+      if (Date.now() > new Date(s.expiresAt).getTime()) {
+        localStorage.removeItem(STORAGE_SESSION);
+        return null;
+      }
+      return s;
+    } catch (e) {
+      return null;
+    }
   }
 
-  function renderOverlayNav() {
-    var current = getCurrentPageId();
-    return NAV_LINKS.map(function (link) {
-      var active = link.id === current ? " is-active" : "";
-      var aria = link.id === current ? ' aria-current="page"' : "";
-      return (
-        '<a href="' +
-        link.href +
-        '" class="' +
-        active.trim() +
-        '"' +
-        aria +
-        ' data-nav-link>' +
-        link.label +
-        "</a>"
-      );
-    }).join("");
+  function mirrorReadUsers() {
+    try {
+      var raw = localStorage.getItem(STORAGE_USERS);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
   }
 
-  /**
-   * Inner markup for <header id="site-header" class="site-header"> — outer shell lives on each page.
-   */
+  function mirrorGetCurrentUser() {
+    var sess = mirrorGetSession();
+    if (!sess) {
+      return null;
+    }
+    var users = mirrorReadUsers();
+    for (var i = 0; i < users.length; i++) {
+      if (users[i].id === sess.userId) {
+        return users[i];
+      }
+    }
+    return null;
+  }
+
+  function mirrorLogout() {
+    localStorage.removeItem(STORAGE_SESSION);
+    window.location.href = "login.html";
+  }
+
+  function escapeAttr(s) {
+    return String(s || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function initialsFromName(name) {
+    var parts = (name || "").trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) {
+      return "?";
+    }
+    if (parts.length === 1) {
+      return parts[0].slice(0, 2).toUpperCase();
+    }
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
+
+  function footerContactLine() {
+    try {
+      var raw = localStorage.getItem(STORAGE_SETTINGS);
+      if (raw) {
+        var o = JSON.parse(raw);
+        if (o && o.contactEmail) {
+          return escapeAttr(o.contactEmail);
+        }
+      }
+    } catch (e) {}
+    return "hello@[youragency].com";
+  }
+
+  function clientAreaHref(isAuth) {
+    return isAuth ? "client-area.html" : "login.html";
+  }
+
+  function renderDesktopNav(links, current) {
+    return links
+      .map(function (link) {
+        var active = link.id === current ? " is-active" : "";
+        var aria = link.id === current ? ' aria-current="page"' : "";
+        var href = link.guestHref && !mirrorGetCurrentUser() ? link.guestHref : link.href;
+        return (
+          '<a href="' +
+          href +
+          '" class="' +
+          active.trim() +
+          '"' +
+          aria +
+          ' data-nav-link>' +
+          link.label +
+          "</a>"
+        );
+      })
+      .join("");
+  }
+
+  function renderOverlayNav(links, current) {
+    return renderDesktopNav(links, current);
+  }
+
+  function navLinkSet() {
+    var page = getCurrentPageId();
+    if (page === "login" || page === "register") {
+      return NAV_LINKS_AUTH_PAGE;
+    }
+    return mirrorGetCurrentUser() ? NAV_LINKS_AUTH : NAV_LINKS_FULL;
+  }
+
+  function userMenuHtml() {
+    var u = mirrorGetCurrentUser();
+    if (!u) {
+      return "";
+    }
+    var ini = initialsFromName(u.name);
+    var adminLink =
+      u.role === "admin"
+        ? '<a href="admin.html" role="menuitem">Admin Panel</a>'
+        : "";
+    return (
+      '<div class="nav-user">' +
+      '<button type="button" class="nav-user__trigger" id="nav-user-trigger" aria-expanded="false" aria-haspopup="true">' +
+      '<span class="nav-user__avatar" aria-hidden="true">' +
+      ini +
+      "</span>" +
+      '<span class="nav-user__label">' +
+      escapeAttr(u.name || "Account") +
+      "</span>" +
+      '<span class="nav-user__chev" aria-hidden="true"></span>' +
+      "</button>" +
+      '<div class="nav-user__backdrop" id="nav-user-backdrop" aria-hidden="true"></div>' +
+      '<div class="nav-user__menu" id="nav-user-menu" role="menu" hidden>' +
+      '<div class="nav-user__meta">' +
+      '<p class="nav-user__name">' +
+      escapeAttr(u.name || "") +
+      "</p>" +
+      '<p class="nav-user__email">' +
+      escapeAttr(u.email || "") +
+      "</p>" +
+      "</div>" +
+      '<a href="client-area.html" role="menuitem">My Dashboard</a>' +
+      adminLink +
+      '<a href="client-area.html#settings" role="menuitem">Settings</a>' +
+      '<button type="button" class="nav-user__signout" id="nav-user-signout" role="menuitem">Sign Out</button>' +
+      "</div>" +
+      "</div>"
+    );
+  }
+
   function getHeaderInnerHtml() {
+    var current = getCurrentPageId();
+    var links = navLinkSet();
+    var isAuthPage = current === "login" || current === "register";
+    var user = mirrorGetCurrentUser();
+    var rightBlock = "";
+    if (user && !isAuthPage) {
+      rightBlock = userMenuHtml();
+    } else if (!isAuthPage) {
+      rightBlock = '<a class="btn btn--primary nav-cta btn--magnetic" href="contact.html">Start a Project</a>';
+    } else {
+      rightBlock = '<a class="btn btn--primary nav-cta btn--magnetic" href="contact.html">Start a Project</a>';
+    }
+
     return (
       '<div class="site-header__inner">' +
       '<a href="index.html" class="logo" aria-label="[YOUR AGENCY NAME] home">' +
       '<span class="logo__accent">[YOUR</span><span class="logo__rest"> AGENCY NAME]</span>' +
       "</a>" +
       '<nav class="nav-desktop" aria-label="Primary navigation">' +
-      renderDesktopNav() +
+      renderDesktopNav(links, current) +
       "</nav>" +
-      '<a class="btn btn--primary nav-cta btn--magnetic" href="contact.html">Start a Project</a>' +
+      rightBlock +
       '<button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="nav-overlay" aria-label="Open menu">' +
       '<span class="nav-toggle__bars" aria-hidden="true">' +
       "<span></span><span></span><span></span>" +
@@ -79,15 +226,26 @@
       '<div class="nav-overlay" id="nav-overlay" role="dialog" aria-modal="true" aria-label="Mobile menu" hidden>' +
       '<button type="button" class="nav-overlay__close" id="nav-overlay-close" aria-label="Close menu">×</button>' +
       '<nav class="nav-overlay__links" aria-label="Mobile primary">' +
-      renderOverlayNav() +
+      renderOverlayNav(links, current) +
       "</nav>" +
-      '<a class="btn btn--primary nav-overlay__cta btn--magnetic" href="contact.html">Start a Project</a>' +
+      (user && !isAuthPage
+        ? '<div class="nav-overlay__user" style="margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.08)">' +
+          '<a class="btn btn--primary btn--magnetic" style="width:100%;margin-bottom:0.5rem" href="client-area.html">My Dashboard</a>' +
+          (user.role === "admin"
+            ? '<a class="btn btn--magnetic" style="width:100%;margin-bottom:0.5rem" href="admin.html">Admin Panel</a>'
+            : "") +
+          '<a class="btn btn--magnetic" style="width:100%;margin-bottom:0.5rem" href="client-area.html#settings">Settings</a>' +
+          '<button type="button" class="btn btn--magnetic" style="width:100%" id="nav-overlay-signout">Sign Out</button>' +
+          "</div>"
+        : '<a class="btn btn--primary nav-overlay__cta btn--magnetic" href="contact.html">Start a Project</a>') +
       "</div>"
     );
   }
 
   function getFooterInnerHtml() {
     var year = new Date().getFullYear();
+    var caHref = clientAreaHref(!!mirrorGetCurrentUser());
+    var emailLine = footerContactLine();
     return (
       '<div class="site-footer__grid">' +
       '<div class="site-footer__brand">' +
@@ -102,13 +260,17 @@
       '<li><a href="index.html">Home</a></li>' +
       '<li><a href="portfolio.html">Portfolio</a></li>' +
       '<li><a href="services.html">Services</a></li>' +
-      '<li><a href="client-area.html">Client Area</a></li>' +
+      '<li><a href="' +
+      caHref +
+      '">Client Area</a></li>' +
       '<li><a href="contact.html">Contact</a></li>' +
       "</ul>" +
       "</div>" +
       "<div>" +
       "<h3>Connect</h3>" +
-      '<p style="margin:0 0 0.75rem;color:var(--text-secondary);font-size:0.95rem;">hello@[youragency].com</p>' +
+      '<p style="margin:0 0 0.75rem;color:var(--text-secondary);font-size:0.95rem;">' +
+      emailLine +
+      "</p>" +
       '<div class="social-row" role="list">' +
       '<a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram (placeholder)">' +
       '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>' +
@@ -131,6 +293,60 @@
     );
   }
 
+  function setUserMenuOpen(open) {
+    var trigger = document.getElementById("nav-user-trigger");
+    var menu = document.getElementById("nav-user-menu");
+    var backdrop = document.getElementById("nav-user-backdrop");
+    if (!menu || !trigger) {
+      return;
+    }
+    menu.classList.toggle("is-open", open);
+    trigger.setAttribute("aria-expanded", open ? "true" : "false");
+    menu.hidden = !open;
+    if (backdrop) {
+      backdrop.classList.toggle("is-visible", open);
+    }
+  }
+
+  function wireNavUserMenu() {
+    var trigger = document.getElementById("nav-user-trigger");
+    var menu = document.getElementById("nav-user-menu");
+    var backdrop = document.getElementById("nav-user-backdrop");
+    var signout = document.getElementById("nav-user-signout");
+    var overlaySign = document.getElementById("nav-overlay-signout");
+    if (!trigger || !menu) {
+      return;
+    }
+    trigger.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var open = !menu.classList.contains("is-open");
+      setUserMenuOpen(open);
+    });
+    if (backdrop) {
+      backdrop.addEventListener("click", function () {
+        setUserMenuOpen(false);
+      });
+    }
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        setUserMenuOpen(false);
+      }
+    });
+    function doLogout() {
+      if (window.AgencyAuth && AgencyAuth.logoutUser) {
+        AgencyAuth.logoutUser();
+      } else {
+        mirrorLogout();
+      }
+    }
+    if (signout) {
+      signout.addEventListener("click", doLogout);
+    }
+    if (overlaySign) {
+      overlaySign.addEventListener("click", doLogout);
+    }
+  }
+
   function inject() {
     var header = document.getElementById("site-header");
     var footer = document.getElementById("site-footer");
@@ -140,6 +356,7 @@
     if (footer) {
       footer.innerHTML = getFooterInnerHtml();
     }
+    wireNavUserMenu();
   }
 
   if (document.readyState === "loading") {

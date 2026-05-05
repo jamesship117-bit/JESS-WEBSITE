@@ -578,6 +578,27 @@
         return;
       }
 
+      /* Admin inbox preview: persist submission for admin panel (localStorage only).
+         For production, POST to a backend instead of storing in the browser. */
+      try {
+        var STORAGE_MSG = "agency_messages";
+        var msgs = JSON.parse(localStorage.getItem(STORAGE_MSG) || "[]");
+        var descVal = desc.value.trim();
+        msgs.push({
+          id: "msg_" + Date.now(),
+          name: name.value.trim(),
+          email: email.value.trim(),
+          subject: "Project inquiry",
+          preview: descVal.slice(0, 120),
+          body: descVal,
+          createdAt: new Date().toISOString(),
+          read: false,
+        });
+        localStorage.setItem(STORAGE_MSG, JSON.stringify(msgs));
+      } catch (err) {
+        /* ignore storage quota / private mode */
+      }
+
       if (wrap) {
         wrap.classList.add("is-hidden");
       }

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Sign in — [YOUR AGENCY NAME] client area." />
+    <title>Sign In — [YOUR AGENCY NAME]</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Syne:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="page page--login auth-page" data-page="login">
+    <div class="page-bg" aria-hidden="true">
+      <div class="page-bg__grid"></div>
+      <div class="page-bg__dots"></div>
+      <div class="page-bg__noise"></div>
+    </div>
+
+    <div class="custom-cursor" aria-hidden="true">
+      <div class="custom-cursor__dot"></div>
+      <div class="custom-cursor__ring"></div>
+    </div>
+
+    <header id="site-header" class="site-header"></header>
+
+    <main id="main-content" class="auth-page__main">
+      <div class="auth-card" id="login-card" aria-labelledby="login-heading">
+        <div class="auth-card__logo">
+          <a href="index.html" class="logo" aria-label="[YOUR AGENCY NAME] home">
+            <span class="logo__accent">[YOUR</span><span class="logo__rest"> AGENCY NAME]</span>
+          </a>
+        </div>
+        <h1 id="login-heading" class="auth-card__title">Welcome Back</h1>
+        <p class="auth-card__lead">Sign in to access your client dashboard</p>
+        <p class="auth-card__error" id="login-form-error" role="alert"></p>
+        <form id="login-form" novalidate>
+          <div class="field">
+            <label for="login-email">Email Address <span aria-hidden="true">*</span></label>
+            <input id="login-email" name="email" type="email" autocomplete="email" required aria-required="true" />
+            <span class="field__error" id="login-err-email" aria-live="polite"></span>
+          </div>
+          <div class="field">
+            <label for="login-password">Password <span aria-hidden="true">*</span></label>
+            <div class="password-field">
+              <input
+                id="login-password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                required
+                aria-required="true"
+                minlength="8"
+              />
+              <button type="button" class="password-toggle" id="login-toggle-pw" aria-label="Show password" aria-pressed="false">
+                <span aria-hidden="true">👁</span>
+              </button>
+            </div>
+            <span class="field__error" id="login-err-password" aria-live="polite"></span>
+          </div>
+          <div class="field field--row">
+            <input id="login-remember" name="remember" type="checkbox" />
+            <label for="login-remember">Remember me (7 days)</label>
+          </div>
+          <p class="auth-forgot-msg" id="login-forgot-msg" role="status">
+            Please contact us at hello@[youragency].com to reset your password.
+          </p>
+          <p style="margin: 0 0 1rem">
+            <button type="button" class="btn" id="login-forgot-btn" style="padding: 0.35rem 0; border: none; background: none; color: var(--accent-cyan); font-weight: 600; cursor: pointer; text-decoration: underline">
+              Forgot Password?
+            </button>
+          </p>
+          <button type="submit" class="btn btn--primary btn--glow btn--magnetic" style="width: 100%; margin-top: 0.25rem">Sign In →</button>
+        </form>
+        <div class="auth-card__footer">
+          <p style="margin: 0 0 0.5rem">Don&apos;t have an account? <a href="register.html">Register here</a></p>
+          <p style="margin: 0"><a href="index.html">Back to Home</a></p>
+        </div>
+      </div>
+    </main>
+
+    <footer id="site-footer" class="site-footer"></footer>
+
+    <script src="auth.js"></script>
+    <script src="components.js"></script>
+    <script src="main.js"></script>
+    <script>
+      (function () {
+        "use strict";
+        if (window.AgencyAuth && AgencyAuth.redirectIfAuthenticated()) {
+          return;
+        }
+        var form = document.getElementById("login-form");
+        var card = document.getElementById("login-card");
+        var errBox = document.getElementById("login-form-error");
+        var email = document.getElementById("login-email");
+        var password = document.getElementById("login-password");
+        var remember = document.getElementById("login-remember");
+        var forgotBtn = document.getElementById("login-forgot-btn");
+        var forgotMsg = document.getElementById("login-forgot-msg");
+        var togglePw = document.getElementById("login-toggle-pw");
+
+        function setFieldErr(id, msg) {
+          var el = document.getElementById(id);
+          if (el) {
+            el.textContent = msg || "";
+          }
+          var wrap = el && el.closest && el.closest(".field");
+          if (wrap) {
+            wrap.classList.toggle("field--error", !!msg);
+          }
+        }
+
+        function validateEmail(v) {
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v || "");
+        }
+
+        if (togglePw && password) {
+          togglePw.addEventListener("click", function () {
+            var show = password.type === "password";
+            password.type = show ? "text" : "password";
+            togglePw.setAttribute("aria-label", show ? "Hide password" : "Show password");
+            togglePw.setAttribute("aria-pressed", show ? "true" : "false");
+          });
+        }
+
+        if (forgotBtn && forgotMsg) {
+          forgotBtn.addEventListener("click", function () {
+            forgotMsg.classList.toggle("is-visible");
+          });
+        }
+
+        if (form) {
+          form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            errBox.textContent = "";
+            setFieldErr("login-err-email", "");
+            setFieldErr("login-err-password", "");
+            card.classList.remove("auth-card--shake");
+            var ok = true;
+            var em = (email && email.value.trim()) || "";
+            var pw = (password && password.value) || "";
+            if (!validateEmail(em)) {
+              setFieldErr("login-err-email", "Enter a valid email address.");
+              ok = false;
+            }
+            if (!pw || pw.length < 8) {
+              setFieldErr("login-err-password", "Password must be at least 8 characters.");
+              ok = false;
+            }
+            if (!ok) {
+              card.classList.add("auth-card--shake");
+              return;
+            }
+            AgencyAuth.loginUser(em, pw, remember && remember.checked).then(function (res) {
+              if (res.success) {
+                var name = (res.user && res.user.name) || "there";
+                AgencyAuth.showToast("Welcome back, " + name + "!", "success");
+                setTimeout(function () {
+                  window.location.href = "client-area.html";
+                }, 800);
+              } else {
+                errBox.textContent = res.error || "Invalid email or password. Please try again.";
+                card.classList.add("auth-card--shake");
+              }
+            });
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
