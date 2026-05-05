@@ -161,11 +161,11 @@ textarea {
 
 .custom-cursor {
   position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 9999;
+  inset: 0;
+  z-index: 2147483645;
   pointer-events: none;
-  mix-blend-mode: screen;
+  isolation: isolate;
+  transform: translateZ(0);
   display: none;
 }
 
@@ -179,26 +179,28 @@ textarea {
   position: absolute;
   width: 8px;
   height: 8px;
-  margin: -4px 0 0 -4px;
+  left: 0;
+  top: 0;
   border-radius: 50%;
   background: var(--accent-cyan);
   box-shadow:
     0 0 12px var(--accent-cyan),
     0 0 24px var(--accent-cyan-glow);
-  transform: translate3d(-100px, -100px, 0);
-  transition: transform 0.06s linear;
+  transform: translate3d(-100px, -100px, 0) translate(-50%, -50%);
+  will-change: transform;
 }
 
 .custom-cursor__ring {
   position: absolute;
   width: 40px;
   height: 40px;
-  margin: -20px 0 0 -20px;
+  left: 0;
+  top: 0;
   border-radius: 50%;
   border: 1px solid rgba(0, 240, 255, 0.35);
   box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
-  transform: translate3d(-100px, -100px, 0);
-  transition: transform 0.18s var(--ease-out);
+  transform: translate3d(-100px, -100px, 0) translate(-50%, -50%);
+  will-change: transform;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -207,25 +209,22 @@ textarea {
 
 body {
   opacity: 1;
-  transform: translateY(0);
-  transition:
-    opacity 0.45s var(--ease-out),
-    transform 0.45s var(--ease-out);
+  /* No transform on body: any transform makes fixed children use the wrong
+     containing block vs. clientX/clientY. Page transitions use opacity only. */
+  transform: none;
+  transition: opacity 0.45s var(--ease-out);
 }
 
 body.page-exit {
   opacity: 0;
-  transform: translateY(-16px);
 }
 
 body.page-enter {
   opacity: 0;
-  transform: translateY(20px);
 }
 
 body.page-enter-active {
   opacity: 1;
-  transform: translateY(0);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -307,6 +306,7 @@ body.page-enter-active {
 .reveal {
   opacity: 0;
   transform: translateY(28px);
+  pointer-events: none;
   transition:
     opacity 0.7s var(--ease-out),
     transform 0.7s var(--ease-out);
@@ -315,6 +315,7 @@ body.page-enter-active {
 .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
+  pointer-events: auto;
 }
 
 .reveal-stagger > * {
@@ -325,9 +326,17 @@ body.page-enter-active {
     transform 0.65s var(--ease-out);
 }
 
+.reveal-stagger:not(.is-visible) {
+  pointer-events: none;
+}
+
 .reveal-stagger.is-visible > * {
   opacity: 1;
   transform: translateY(0);
+}
+
+.reveal-stagger.is-visible {
+  pointer-events: auto;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -1969,7 +1978,7 @@ main {
   position: fixed;
   bottom: 1.5rem;
   right: 1.5rem;
-  z-index: 10000;
+  z-index: 2147483646;
   padding: 1rem 1.25rem;
   border-radius: 10px;
   border: 1px solid rgba(0, 240, 255, 0.45);

@@ -41,11 +41,17 @@
     if (!window.matchMedia("(pointer: fine)").matches) {
       return;
     }
+    var root = document.querySelector(".custom-cursor");
     var dot = document.querySelector(".custom-cursor__dot");
     var ring = document.querySelector(".custom-cursor__ring");
-    if (!dot || !ring) {
+    if (!root || !dot || !ring) {
       return;
     }
+
+    /* Last child of body: stays above backdrop-filter / glass compositor layers
+       (Chrome paints html-appended fixed siblings under those). Body must not use
+       transform at rest — see style.css page transitions. */
+    document.body.appendChild(root);
 
     document.body.classList.add("has-custom-cursor");
 
@@ -54,18 +60,25 @@
     var ringX = mx;
     var ringY = my;
 
+    function tf(x, y) {
+      return "translate3d(" + x + "px," + y + "px,0) translate(-50%, -50%)";
+    }
+
     function move(e) {
       mx = e.clientX;
       my = e.clientY;
-      dot.style.transform = "translate3d(" + mx + "px," + my + "px,0)";
+      dot.style.transform = tf(mx, my);
     }
 
     function tick() {
       ringX += (mx - ringX) * 0.18;
       ringY += (my - ringY) * 0.18;
-      ring.style.transform = "translate3d(" + ringX + "px," + ringY + "px,0)";
+      ring.style.transform = tf(ringX, ringY);
       requestAnimationFrame(tick);
     }
+
+    dot.style.transform = tf(mx, my);
+    ring.style.transform = tf(ringX, ringY);
 
     document.addEventListener("mousemove", move, { passive: true });
     requestAnimationFrame(tick);
