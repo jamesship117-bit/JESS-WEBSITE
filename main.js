@@ -55,8 +55,12 @@
 
     document.body.classList.add("has-custom-cursor");
 
-    var mx = window.innerWidth / 2;
-    var my = window.innerHeight / 2;
+    /* Viewport pointer (updated on mousemove); inner mx/my derived from root rect so
+       the dot stays aligned if fixed positioning is offset from the visual viewport. */
+    var vpx = window.innerWidth / 2;
+    var vpy = window.innerHeight / 2;
+    var mx = vpx;
+    var my = vpy;
     var ringX = mx;
     var ringY = my;
 
@@ -64,10 +68,17 @@
       return "translate3d(" + x + "px," + y + "px,0) translate(-50%, -50%)";
     }
 
-    function move(e) {
-      mx = e.clientX;
-      my = e.clientY;
+    function syncPointerToRoot() {
+      var r = root.getBoundingClientRect();
+      mx = vpx - r.left;
+      my = vpy - r.top;
       dot.style.transform = tf(mx, my);
+    }
+
+    function move(e) {
+      vpx = e.clientX;
+      vpy = e.clientY;
+      syncPointerToRoot();
     }
 
     function tick() {
@@ -77,10 +88,19 @@
       requestAnimationFrame(tick);
     }
 
-    dot.style.transform = tf(mx, my);
+    syncPointerToRoot();
+    ringX = mx;
+    ringY = my;
     ring.style.transform = tf(ringX, ringY);
 
     document.addEventListener("mousemove", move, { passive: true });
+    /* Capture: nested scrollers (e.g. textarea) don't bubble scroll to window. */
+    document.addEventListener("scroll", syncPointerToRoot, { passive: true, capture: true });
+    window.addEventListener("resize", syncPointerToRoot, { passive: true });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("scroll", syncPointerToRoot, { passive: true });
+      window.visualViewport.addEventListener("resize", syncPointerToRoot, { passive: true });
+    }
     requestAnimationFrame(tick);
   }
 
@@ -335,9 +355,9 @@
       if (!list.length) {
         selectedId = null;
         notesListEl.innerHTML =
-          '<p class="note-item__preview" style="padding:0.75rem 0;">No notes yet. Add one below.</p>';
+          '<p class="note-editor__placeholder">No notes yet. Add one below.</p>';
         if (noteDetail) {
-          noteDetail.innerHTML = "<p>Select a note or create a new one.</p>";
+          noteDetail.innerHTML = '<p class="note-editor__placeholder">Select a note or create a new one.</p>';
         }
         return;
       }
@@ -355,7 +375,7 @@
           btn.className = "note-item" + (note.id === selectedId ? " is-selected" : "");
           btn.setAttribute("data-note-id", note.id);
           btn.innerHTML =
-            '<p class="note-item__title"></p><p class="note-item__preview"></p><p class="note-item__preview" style="font-size:0.75rem;margin-top:0.35rem;"></p>';
+            '<p class="note-item__title"></p><p class="note-item__preview"></p><p class="note-item__preview note-item__preview--meta"></p>';
           btn.querySelector(".note-item__title").textContent = note.title || "Untitled";
           var prev = btn.querySelectorAll(".note-item__preview");
           prev[0].textContent = (note.body || "").slice(0, 80);
@@ -381,7 +401,7 @@
             }
             renderNotes();
             if (noteDetail) {
-              noteDetail.innerHTML = "<p>Note deleted.</p>";
+              noteDetail.innerHTML = '<p class="note-editor__placeholder">Note deleted.</p>';
             }
           });
 
@@ -409,10 +429,10 @@
         return;
       }
       noteDetail.innerHTML =
-        "<h3 style=\"margin-top:0;font-family:var(--font-display);\"></h3><p style=\"color:var(--text-secondary);font-size:0.85rem;\"></p><p style=\"white-space:pre-wrap;margin-top:1rem;\"></p>";
+        "<h3></h3><p class=\"note-editor__meta\"></p><p class=\"note-editor__body\"></p>";
       noteDetail.querySelector("h3").textContent = note.title || "Untitled";
-      noteDetail.querySelectorAll("p")[0].textContent = new Date(note.updatedAt).toLocaleString();
-      noteDetail.querySelectorAll("p")[1].textContent = note.body || "";
+      noteDetail.querySelector(".note-editor__meta").textContent = new Date(note.updatedAt).toLocaleString();
+      noteDetail.querySelector(".note-editor__body").textContent = note.body || "";
     }
 
     if (noteForm) {
