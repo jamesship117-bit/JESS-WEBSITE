@@ -26,6 +26,10 @@
   --error: #ff4d6d;
   --header-h: 72px;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Native <select> lists often use a light surface — options need dark text */
+  --select-option-text: #0a0d18;
+  --select-option-bg: #eef2f8;
+  --select-option-bg-hover: #e2e8f0;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -1775,6 +1779,27 @@ main {
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   transition: border-color 0.2s ease;
+}
+
+.field select {
+  color: var(--text-primary);
+  background-color: rgba(10, 12, 28, 0.92);
+}
+
+.field select option {
+  color: var(--select-option-text);
+  background-color: var(--select-option-bg);
+}
+
+.field select option:hover,
+.field select option:focus {
+  background-color: var(--select-option-bg-hover);
+  color: var(--select-option-text);
+}
+
+.field select option:checked {
+  background-color: #d4dce8;
+  color: var(--select-option-text);
 }
 
 .field input:focus-visible,
