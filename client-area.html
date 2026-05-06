@@ -289,10 +289,157 @@
       </section>
     </main>
 
+    <div
+      id="agency-force-password-overlay"
+      class="agency-force-password-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="agency-fp-heading"
+      aria-hidden="true"
+    >
+      <div class="agency-force-password-overlay__inner glass glass--static auth-card" id="agency-fp-card">
+        <div class="register-access-denied__icon" style="margin-bottom: 0.25rem" aria-hidden="true">
+          <svg class="agency-fp-lock" width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M7 11V8a5 5 0 0 1 10 0v3"
+              stroke="var(--accent-cyan, #22d3ee)"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <rect x="5" y="11" width="14" height="11" rx="2" stroke="currentColor" stroke-width="2" class="agency-fp-lock__body" />
+            <circle cx="12" cy="16.5" r="1.25" fill="currentColor" class="agency-fp-lock__dot" />
+          </svg>
+        </div>
+        <h2 id="agency-fp-heading" class="auth-card__title" style="margin-top: 0">Set Your New Password</h2>
+        <p class="auth-card__lead">
+          Your administrator set a temporary password for you. Please create a new password before continuing.
+        </p>
+        <form id="agency-fp-form" novalidate>
+          <div class="field">
+            <label for="agency-fp-new">New Password <span aria-hidden="true">*</span></label>
+            <input id="agency-fp-new" type="password" autocomplete="new-password" minlength="8" required aria-required="true" />
+            <div class="pw-strength" aria-hidden="true">
+              <div class="pw-strength__bar" id="agency-fp-bar"></div>
+            </div>
+            <p class="pw-strength__label" id="agency-fp-label" aria-live="polite"></p>
+            <span class="field__error" id="agency-fp-err-new" aria-live="polite"></span>
+          </div>
+          <div class="field">
+            <label for="agency-fp-new2">Confirm New Password <span aria-hidden="true">*</span></label>
+            <input id="agency-fp-new2" type="password" autocomplete="new-password" minlength="8" required aria-required="true" />
+            <span class="field__error" id="agency-fp-err-new2" aria-live="polite"></span>
+          </div>
+          <button type="submit" class="btn btn--primary btn--glow btn--magnetic" style="width: 100%; margin-top: 0.75rem">Set Password &amp; Continue →</button>
+        </form>
+      </div>
+    </div>
+
     <footer id="site-footer" class="site-footer"></footer>
 
     <script src="auth.js"></script>
     <script src="components.js"></script>
     <script src="dashboard.js"></script>
+    <script>
+      (function () {
+        "use strict";
+        function pwStrength(p) {
+          var score = 0;
+          if ((p || "").length >= 8) {
+            score++;
+          }
+          if (/[A-Z]/.test(p)) {
+            score++;
+          }
+          if (/[0-9]/.test(p)) {
+            score++;
+          }
+          if (/[^A-Za-z0-9]/.test(p)) {
+            score++;
+          }
+          if (score <= 1) {
+            return { cls: "pw-strength__bar--weak", label: "Weak" };
+          }
+          if (score <= 3) {
+            return { cls: "pw-strength__bar--fair", label: "Fair" };
+          }
+          return { cls: "pw-strength__bar--strong", label: "Strong" };
+        }
+        function setFpErr(id, msg) {
+          var el = document.getElementById(id);
+          if (el) {
+            el.textContent = msg || "";
+          }
+          var wrap = el && el.closest && el.closest(".field");
+          if (wrap) {
+            wrap.classList.toggle("field--error", !!msg);
+          }
+        }
+        function clearFpErrs() {
+          setFpErr("agency-fp-err-new", "");
+          setFpErr("agency-fp-err-new2", "");
+        }
+        var u = window.AgencyAuth && AgencyAuth.getCurrentUser();
+        if (!u || !u.forcePasswordChange) {
+          return;
+        }
+        var overlay = document.getElementById("agency-force-password-overlay");
+        var card = document.getElementById("agency-fp-card");
+        var form = document.getElementById("agency-fp-form");
+        var inpNew = document.getElementById("agency-fp-new");
+        var inpNew2 = document.getElementById("agency-fp-new2");
+        var bar = document.getElementById("agency-fp-bar");
+        var label = document.getElementById("agency-fp-label");
+        if (!overlay || !form || !inpNew) {
+          return;
+        }
+        function onEscapeBlock(ev) {
+          if (ev.key === "Escape") {
+            ev.preventDefault();
+            ev.stopPropagation();
+          }
+        }
+        document.addEventListener("keydown", onEscapeBlock, true);
+        overlay.classList.add("is-open");
+        overlay.setAttribute("aria-hidden", "false");
+        if (inpNew && bar && label) {
+          inpNew.addEventListener("input", function () {
+            bar.className = "pw-strength__bar " + pwStrength(inpNew.value).cls;
+            label.textContent = inpNew.value ? pwStrength(inpNew.value).label : "";
+          });
+        }
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          clearFpErrs();
+          if (card) {
+            card.classList.remove("auth-card--shake");
+          }
+          var p1 = (inpNew && inpNew.value) || "";
+          var p2 = (inpNew2 && inpNew2.value) || "";
+          var ok = true;
+          if (p1.length < 8) {
+            setFpErr("agency-fp-err-new", "Password must be at least 8 characters.");
+            ok = false;
+          }
+          if (p1 !== p2) {
+            setFpErr("agency-fp-err-new2", "Passwords do not match.");
+            ok = false;
+          }
+          if (!ok) {
+            if (card) {
+              card.classList.add("auth-card--shake");
+            }
+            return;
+          }
+          AgencyAuth.hashPassword(p1).then(function (h) {
+            AgencyAuth.updateUser(u.id, { password: h, forcePasswordChange: false });
+            document.removeEventListener("keydown", onEscapeBlock, true);
+            overlay.classList.remove("is-open");
+            overlay.setAttribute("aria-hidden", "true");
+            AgencyAuth.showToast("Password updated successfully. Welcome!", "success");
+            AgencyAuth.revealAuthPendingBody();
+          });
+        });
+      })();
+    </script>
   </body>
 </html>

@@ -20,7 +20,6 @@
   var LEGACY_NOTES_KEY = "[YOUR_AGENCY_NAME]_client_notes_v1";
 
   var SEED_ADMIN_EMAIL = "admin@agency.com";
-  var SEED_CLIENT_EMAIL = "client@agency.com";
 
   function bufToHex(buf) {
     return Array.prototype.map
@@ -151,42 +150,11 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v || "");
   }
 
-  async function registerUser(name, email, password, company, phone) {
-    if (!name || !name.trim()) {
-      return { success: false, error: "Name is required." };
-    }
-    if (!validateEmail(email)) {
-      return { success: false, error: "Enter a valid email address." };
-    }
-    if (!password || password.length < 8) {
-      return { success: false, error: "Password must be at least 8 characters." };
-    }
-    var users = readUsers();
-    var em = (email || "").trim().toLowerCase();
-    for (var i = 0; i < users.length; i++) {
-      if ((users[i].email || "").toLowerCase() === em) {
-        return { success: false, error: "An account with this email already exists." };
-      }
-    }
-    var hash = await hashPassword(password);
-    var user = {
-      id: "user_" + Date.now(),
-      name: name.trim(),
-      email: em,
-      password: hash,
-      company: (company || "").trim(),
-      phone: (phone || "").trim(),
-      role: "client",
-      createdAt: new Date().toISOString(),
-      avatar: null,
-      projects: [],
-      notes: [],
-      messages: [],
-      preferredContact: "Email",
+  async function registerUser() {
+    return {
+      success: false,
+      error: "Self-registration is disabled. Contact your administrator for an account.",
     };
-    users.push(user);
-    writeUsers(users);
-    return { success: true, user: user };
   }
 
   async function loginUser(email, password, remember) {
@@ -215,7 +183,16 @@
       window.location.replace("login.html");
       return null;
     }
-    return getCurrentUser();
+    var u = getCurrentUser();
+    if (!u) {
+      destroySession();
+      showToast("Your account no longer exists. Please contact your administrator.", "error");
+      setTimeout(function () {
+        window.location.replace("login.html");
+      }, 400);
+      return null;
+    }
+    return u;
   }
 
   function adminRoute() {
@@ -239,6 +216,10 @@
   }
 
   function revealAuthPendingBody() {
+    var u = getCurrentUser();
+    if (u && u.forcePasswordChange) {
+      return;
+    }
     document.body.classList.remove("auth-pending");
   }
 
@@ -296,12 +277,16 @@
   }
 
   /* -------------------------------------------------------------------------- */
-  /* Seed default users (async — hashes)                                      */
+  /* Seed default users                                                         */
   /* -------------------------------------------------------------------------- */
 
-  /* Precomputed SHA-256 (UTF-8) of seed passwords — matches hashPassword() output */
+  // DEFAULT ADMIN CREDENTIALS — CHANGE IMMEDIATELY AFTER FIRST LOGIN
+  // Email: admin@agency.com
+  // Password: Admin1234!
+  // Delete this comment block before going to production
+
+  /* Precomputed SHA-256 (UTF-8) of "Admin1234!" — matches hashPassword() output */
   var SEED_ADMIN_HASH = "5ce41ada64f1e8ffb0acfaafa622b141438f3a5777785e7f0b830fb73e40d3d6";
-  var SEED_CLIENT_HASH = "27f2fc32f11b42fe5bc75ae47d488aa389d0a3820ad96b38c969ccf19dc51165";
 
   function seedIfEmpty() {
     if (readUsers().length > 0) {
@@ -317,24 +302,10 @@
         company: "[YOUR AGENCY NAME]",
         phone: "",
         role: "admin",
+        forcePasswordChange: false,
         createdAt: now,
         avatar: null,
-        projects: ["proj_001"],
-        notes: [],
-        messages: [],
-        preferredContact: "Email",
-      },
-      {
-        id: "user_002",
-        name: "Client Name",
-        email: SEED_CLIENT_EMAIL.toLowerCase(),
-        password: SEED_CLIENT_HASH,
-        company: "Company Name",
-        phone: "",
-        role: "client",
-        createdAt: now,
-        avatar: null,
-        projects: ["proj_001"],
+        projects: [],
         notes: [],
         messages: [],
         preferredContact: "Email",
@@ -346,32 +317,7 @@
       localStorage.setItem(STORAGE_MESSAGES, JSON.stringify([]));
     }
     if (!localStorage.getItem(STORAGE_PROJECTS)) {
-      localStorage.setItem(
-        STORAGE_PROJECTS,
-        JSON.stringify([
-          {
-            id: "proj_001",
-            name: "Aurora Commerce",
-            clientId: "user_002",
-            status: "In Progress",
-            startDate: now.split("T")[0],
-          },
-          {
-            id: "proj_002",
-            name: "Signal Foundry Site",
-            clientId: "user_002",
-            status: "Review",
-            startDate: now.split("T")[0],
-          },
-          {
-            id: "proj_003",
-            name: "Vertex Summit Hub",
-            clientId: "user_002",
-            status: "Complete",
-            startDate: now.split("T")[0],
-          },
-        ])
-      );
+      localStorage.setItem(STORAGE_PROJECTS, JSON.stringify([]));
     }
   }
 

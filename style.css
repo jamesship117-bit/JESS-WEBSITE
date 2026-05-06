@@ -2708,3 +2708,109 @@ body.auth-pending {
   margin: 0 0 0.75rem;
 }
 
+/* --- Auth security upgrade (append) --- */
+
+.auth-card__admin-note {
+  margin: 0 0 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.register-access-denied__sub {
+  margin-bottom: 0.25rem;
+}
+
+.register-access-denied__lock {
+  display: block;
+  margin: 0 auto;
+}
+
+.admin-add-user-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(5, 5, 16, 0.78);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.admin-add-user-modal.is-open {
+  display: flex;
+}
+
+.admin-add-user-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  cursor: default;
+}
+
+.admin-add-user-modal__card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 520px;
+  max-height: min(92vh, 900px);
+  overflow-y: auto;
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+  border-radius: var(--radius);
+}
+
+.admin-add-user-modal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.25rem;
+}
+
+.admin-modal__confirm--danger {
+  background: rgba(220, 38, 38, 0.25) !important;
+  border: 1px solid rgba(248, 113, 113, 0.65) !important;
+  color: #fecaca !important;
+}
+
+.admin-modal__confirm--danger:hover {
+  background: rgba(220, 38, 38, 0.4) !important;
+}
+
+.agency-force-password-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9600;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(5, 5, 16, 0.88);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.agency-force-password-overlay.is-open {
+  display: flex;
+}
+
+.agency-force-password-overlay__inner {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.agency-fp-lock {
+  display: block;
+  margin: 0 auto;
+  color: #f87171;
+}
+
+.agency-fp-lock__body {
+  stroke: #f87171;
+}
+
+.agency-fp-lock__dot {
+  fill: #f87171;
+}
+

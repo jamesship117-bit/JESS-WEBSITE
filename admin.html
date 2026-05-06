@@ -86,35 +86,6 @@
             <input type="search" id="admin-user-search" placeholder="Search name or email…" aria-label="Search users" style="flex: 1; min-width: 200px; padding: 0.65rem 1rem; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.04); color: inherit" />
             <button type="button" class="btn btn--primary btn--magnetic" id="admin-add-user-toggle">Add User</button>
           </div>
-          <div id="admin-add-user-form" class="glass glass--static" style="display: none; padding: 1rem; margin-bottom: 1rem">
-            <h2 class="section__eyebrow" style="margin-top: 0">New user</h2>
-            <form id="admin-create-user-form" class="note-form" style="margin: 0">
-              <div class="field">
-                <label for="au-name">Full name</label>
-                <input id="au-name" required />
-              </div>
-              <div class="field">
-                <label for="au-email">Email</label>
-                <input id="au-email" type="email" required />
-              </div>
-              <div class="field">
-                <label for="au-company">Company</label>
-                <input id="au-company" />
-              </div>
-              <div class="field">
-                <label for="au-role">Role</label>
-                <select id="au-role">
-                  <option value="client">client</option>
-                  <option value="admin">admin</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="au-password">Password</label>
-                <input id="au-password" type="password" minlength="8" required />
-              </div>
-              <button type="submit" class="btn btn--primary">Create user</button>
-            </form>
-          </div>
           <div id="admin-users-table" class="admin-table-wrap"></div>
         </section>
 
@@ -176,6 +147,60 @@
         </section>
       </div>
     </main>
+
+    <div id="admin-add-user-modal" class="admin-add-user-modal" role="dialog" aria-modal="true" aria-labelledby="admin-add-user-title" hidden>
+      <div class="admin-add-user-modal__backdrop" id="admin-add-user-modal-backdrop" aria-hidden="true"></div>
+      <div class="admin-add-user-modal__card glass glass--static" id="admin-add-user-modal-card">
+        <h2 id="admin-add-user-title" class="service-card__title" style="margin-top: 0">Add User</h2>
+        <p class="section__lead" style="margin-bottom: 1rem">Create an employee or client account. Share the temporary password securely.</p>
+        <form id="admin-create-user-form" class="note-form admin-add-user-form" novalidate>
+          <div class="field">
+            <label for="au-name">Full Name <span aria-hidden="true">*</span></label>
+            <input id="au-name" name="au-name" type="text" autocomplete="name" required aria-required="true" />
+            <span class="field__error" id="au-err-name" aria-live="polite"></span>
+          </div>
+          <div class="field">
+            <label for="au-email">Email Address <span aria-hidden="true">*</span></label>
+            <input id="au-email" name="au-email" type="email" autocomplete="email" required aria-required="true" />
+            <span class="field__error" id="au-err-email" aria-live="polite"></span>
+          </div>
+          <div class="field">
+            <label for="au-company">Company / Business Name</label>
+            <input id="au-company" name="au-company" type="text" autocomplete="organization" />
+          </div>
+          <div class="field">
+            <label for="au-phone">Phone Number</label>
+            <input id="au-phone" name="au-phone" type="tel" autocomplete="tel" />
+          </div>
+          <div class="field">
+            <label for="au-role">Role <span aria-hidden="true">*</span></label>
+            <select id="au-role" name="au-role" required aria-required="true">
+              <option value="client">Client</option>
+              <option value="employee">Employee</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="au-password">Temporary Password <span aria-hidden="true">*</span></label>
+            <input id="au-password" name="au-password" type="password" autocomplete="new-password" minlength="8" required aria-required="true" />
+            <span class="field__error" id="au-err-password" aria-live="polite"></span>
+          </div>
+          <div class="field">
+            <label for="au-password2">Confirm Temporary Password <span aria-hidden="true">*</span></label>
+            <input id="au-password2" name="au-password2" type="password" autocomplete="new-password" minlength="8" required aria-required="true" />
+            <span class="field__error" id="au-err-password2" aria-live="polite"></span>
+          </div>
+          <div class="field field--row">
+            <input id="au-force-pw" name="au-force-pw" type="checkbox" checked />
+            <label for="au-force-pw">Force Password Change on First Login</label>
+          </div>
+          <div class="admin-add-user-modal__actions">
+            <button type="button" class="btn btn--magnetic" id="admin-add-user-cancel">Cancel</button>
+            <button type="submit" class="btn btn--primary btn--magnetic">Create Account</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <div id="admin-modal" class="admin-modal" role="dialog" aria-modal="true" aria-labelledby="admin-modal-title" hidden>
       <div class="admin-modal__card">

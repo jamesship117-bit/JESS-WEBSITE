@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Create an account — [YOUR AGENCY NAME] client area." />
-    <title>Register — [YOUR AGENCY NAME]</title>
+    <meta name="description" content="Registration is not available — [YOUR AGENCY NAME] client area." />
+    <title>Access Restricted — [YOUR AGENCY NAME]</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -29,83 +29,33 @@
     <header id="site-header" class="site-header"></header>
 
     <main id="main-content" class="auth-page__main">
-      <div class="auth-card auth-card--wide" id="register-card" aria-labelledby="register-heading">
+      <div class="auth-card" id="register-access-card" aria-labelledby="register-denied-heading">
         <div class="auth-card__logo">
           <a href="index.html" class="logo" aria-label="[YOUR AGENCY NAME] home">
             <span class="logo__accent">[YOUR</span><span class="logo__rest"> AGENCY NAME]</span>
           </a>
         </div>
-        <h1 id="register-heading" class="auth-card__title">Create Your Account</h1>
-        <p class="auth-card__lead">Request access to your project dashboard</p>
-        <p class="auth-card__error" id="register-form-error" role="alert"></p>
-        <form id="register-form" novalidate>
-          <div class="field">
-            <label for="reg-name">Full Name <span aria-hidden="true">*</span></label>
-            <input id="reg-name" name="name" type="text" autocomplete="name" required aria-required="true" />
-            <span class="field__error" id="reg-err-name" aria-live="polite"></span>
-          </div>
-          <div class="field">
-            <label for="reg-company">Company / Business Name</label>
-            <input id="reg-company" name="company" type="text" autocomplete="organization" />
-          </div>
-          <div class="field">
-            <label for="reg-phone">Phone Number</label>
-            <input id="reg-phone" name="phone" type="tel" autocomplete="tel" />
-          </div>
-          <div class="field">
-            <label for="reg-email">Email Address <span aria-hidden="true">*</span></label>
-            <input id="reg-email" name="email" type="email" autocomplete="email" required aria-required="true" />
-            <span class="field__error" id="reg-err-email" aria-live="polite"></span>
-          </div>
-          <div class="field">
-            <label for="reg-password">Password <span aria-hidden="true">*</span></label>
-            <div class="password-field">
-              <input
-                id="reg-password"
-                name="password"
-                type="password"
-                autocomplete="new-password"
-                required
-                aria-required="true"
-                minlength="8"
-              />
-              <button type="button" class="password-toggle" id="reg-toggle-pw" aria-label="Show password" aria-pressed="false">
-                <span aria-hidden="true">👁</span>
-              </button>
-            </div>
-            <div class="pw-strength" aria-hidden="true">
-              <div class="pw-strength__bar" id="reg-pw-bar"></div>
-            </div>
-            <p class="pw-strength__label" id="reg-pw-label" aria-live="polite"></p>
-            <span class="field__error" id="reg-err-password" aria-live="polite"></span>
-          </div>
-          <div class="field">
-            <label for="reg-password2">Confirm Password <span aria-hidden="true">*</span></label>
-            <div class="password-field">
-              <input
-                id="reg-password2"
-                name="password2"
-                type="password"
-                autocomplete="new-password"
-                required
-                aria-required="true"
-                minlength="8"
-              />
-              <button type="button" class="password-toggle" id="reg-toggle-pw2" aria-label="Show confirm password" aria-pressed="false">
-                <span aria-hidden="true">👁</span>
-              </button>
-            </div>
-            <span class="field__error" id="reg-err-password2" aria-live="polite"></span>
-          </div>
-          <div class="field field--row">
-            <input id="reg-terms" name="terms" type="checkbox" required aria-required="true" />
-            <label for="reg-terms">I agree to the terms of service</label>
-          </div>
-          <span class="field__error" id="reg-err-terms" aria-live="polite"></span>
-          <button type="submit" class="btn btn--primary btn--glow btn--magnetic" style="width: 100%; margin-top: 0.75rem">Create Account →</button>
-        </form>
+        <div class="register-access-denied__icon" aria-hidden="true">
+          <svg class="register-access-denied__lock" width="56" height="56" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M7 11V8a5 5 0 0 1 10 0v3"
+              stroke="var(--accent-cyan, #22d3ee)"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <rect x="5" y="11" width="14" height="11" rx="2" stroke="#f87171" stroke-width="2" />
+            <circle cx="12" cy="16.5" r="1.25" fill="#f87171" />
+          </svg>
+        </div>
+        <h1 id="register-denied-heading" class="auth-card__title">Access Restricted</h1>
+        <p class="auth-card__lead register-access-denied__sub">
+          Account registration is by invitation only. If you need access, contact your administrator.
+        </p>
+        <a href="login.html" class="btn btn--primary btn--glow btn--magnetic" style="width: 100%; margin-top: 0.5rem; text-align: center; text-decoration: none"
+          >Back to Login</a
+        >
         <div class="auth-card__footer">
-          <p style="margin: 0">Already have an account? <a href="login.html">Sign in</a></p>
+          <p style="margin: 0"><a href="index.html">Back to Home</a></p>
         </div>
       </div>
     </main>
@@ -118,140 +68,34 @@
     <script>
       (function () {
         "use strict";
-        if (window.AgencyAuth && AgencyAuth.redirectIfAuthenticated()) {
-          return;
-        }
-        var form = document.getElementById("register-form");
-        var card = document.getElementById("register-card");
-        var errBox = document.getElementById("register-form-error");
-        var pw = document.getElementById("reg-password");
-        var pwBar = document.getElementById("reg-pw-bar");
-        var pwLabel = document.getElementById("reg-pw-label");
-
-        function validateEmail(v) {
-          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v || "");
-        }
-
-        function pwStrength(p) {
-          var score = 0;
-          if ((p || "").length >= 8) {
-            score++;
-          }
-          if (/[A-Z]/.test(p)) {
-            score++;
-          }
-          if (/[0-9]/.test(p)) {
-            score++;
-          }
-          if (/[^A-Za-z0-9]/.test(p)) {
-            score++;
-          }
-          if (score <= 1) {
-            return { cls: "pw-strength__bar--weak", label: "Weak" };
-          }
-          if (score <= 3) {
-            return { cls: "pw-strength__bar--fair", label: "Fair" };
-          }
-          return { cls: "pw-strength__bar--strong", label: "Strong" };
-        }
-
-        function bindToggle(btn, input) {
-          if (!btn || !input) {
-            return;
-          }
-          btn.addEventListener("click", function () {
-            var show = input.type === "password";
-            input.type = show ? "text" : "password";
-            btn.setAttribute("aria-pressed", show ? "true" : "false");
-            btn.setAttribute("aria-label", show ? "Hide password" : "Show password");
-          });
-        }
-        bindToggle(document.getElementById("reg-toggle-pw"), document.getElementById("reg-password"));
-        bindToggle(document.getElementById("reg-toggle-pw2"), document.getElementById("reg-password2"));
-
-        if (pw && pwBar && pwLabel) {
-          pw.addEventListener("input", function () {
-            pwBar.className = "pw-strength__bar " + pwStrength(pw.value).cls;
-            pwLabel.textContent = pw.value ? pwStrength(pw.value).label : "";
-          });
-        }
-
-        function setFieldErr(id, msg) {
-          var el = document.getElementById(id);
-          if (el) {
-            el.textContent = msg || "";
-          }
-          var wrap = el && el.closest && el.closest(".field");
-          if (wrap) {
-            wrap.classList.toggle("field--error", !!msg);
+        function sessionValid() {
+          try {
+            var raw = localStorage.getItem("agency_session");
+            if (!raw) {
+              return false;
+            }
+            var s = JSON.parse(raw);
+            if (!s || !s.userId || !s.expiresAt) {
+              return false;
+            }
+            if (Date.now() > new Date(s.expiresAt).getTime()) {
+              localStorage.removeItem("agency_session");
+              return false;
+            }
+            return true;
+          } catch (e) {
+            return false;
           }
         }
-
-        if (form) {
-          form.addEventListener("submit", function (e) {
-            e.preventDefault();
-            errBox.textContent = "";
-            ["reg-err-name", "reg-err-email", "reg-err-password", "reg-err-password2", "reg-err-terms"].forEach(function (id) {
-              setFieldErr(id, "");
-            });
-            card.classList.remove("auth-card--shake");
-            var name = document.getElementById("reg-name");
-            var company = document.getElementById("reg-company");
-            var phone = document.getElementById("reg-phone");
-            var email = document.getElementById("reg-email");
-            var p1 = document.getElementById("reg-password");
-            var p2 = document.getElementById("reg-password2");
-            var terms = document.getElementById("reg-terms");
-            var ok = true;
-            if (!name || !name.value.trim()) {
-              setFieldErr("reg-err-name", "Full name is required.");
-              ok = false;
-            }
-            if (!email || !validateEmail(email.value.trim())) {
-              setFieldErr("reg-err-email", "Enter a valid email address.");
-              ok = false;
-            }
-            var pass = (p1 && p1.value) || "";
-            if (pass.length < 8) {
-              setFieldErr("reg-err-password", "Password must be at least 8 characters.");
-              ok = false;
-            }
-            if (pass !== ((p2 && p2.value) || "")) {
-              setFieldErr("reg-err-password2", "Passwords do not match.");
-              ok = false;
-            }
-            if (!terms || !terms.checked) {
-              setFieldErr("reg-err-terms", "You must agree to the terms of service.");
-              ok = false;
-            }
-            if (!ok) {
-              card.classList.add("auth-card--shake");
-              return;
-            }
-            AgencyAuth.registerUser(
-              name.value.trim(),
-              email.value.trim(),
-              pass,
-              (company && company.value) || "",
-              (phone && phone.value) || ""
-            ).then(function (res) {
-              if (!res.success) {
-                errBox.textContent = res.error || "Registration failed.";
-                card.classList.add("auth-card--shake");
-                return;
-              }
-              AgencyAuth.loginUser(email.value.trim(), pass, false).then(function (loginRes) {
-                if (loginRes.success) {
-                  AgencyAuth.showToast("Account created! Welcome aboard.", "success");
-                  setTimeout(function () {
-                    window.location.href = "client-area.html";
-                  }, 1000);
-                } else {
-                  errBox.textContent = loginRes.error || "Signed up but login failed; try signing in.";
-                }
-              });
-            });
-          });
+        function userExistsForSession() {
+          if (!sessionValid()) {
+            return false;
+          }
+          var u = window.AgencyAuth && AgencyAuth.getCurrentUser();
+          return !!u;
+        }
+        if (userExistsForSession()) {
+          window.location.replace("client-area.html");
         }
       })();
     </script>

@@ -6,10 +6,14 @@
 
   var modalCallback = null;
 
-  function openModal(title, body, onConfirm) {
+  function openModal(title, body, onConfirm, opts) {
+    opts = opts || {};
     var m = document.getElementById("admin-modal");
+    var confirmBtn = document.getElementById("admin-modal-confirm");
     document.getElementById("admin-modal-title").textContent = title;
     document.getElementById("admin-modal-body").textContent = body;
+    confirmBtn.textContent = opts.confirmLabel || "Confirm";
+    confirmBtn.classList.toggle("admin-modal__confirm--danger", !!opts.destructive);
     modalCallback = onConfirm;
     m.hidden = false;
     m.classList.add("is-open");
@@ -17,9 +21,60 @@
 
   function closeModal() {
     var m = document.getElementById("admin-modal");
+    var confirmBtn = document.getElementById("admin-modal-confirm");
     m.classList.remove("is-open");
     m.hidden = true;
     modalCallback = null;
+    confirmBtn.textContent = "Confirm";
+    confirmBtn.classList.remove("admin-modal__confirm--danger");
+  }
+
+  function validateEmail(v) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v || "");
+  }
+
+  function openAddUserModal() {
+    var form = document.getElementById("admin-create-user-form");
+    var card = document.getElementById("admin-add-user-modal-card");
+    var m = document.getElementById("admin-add-user-modal");
+    if (form) {
+      form.reset();
+    }
+    var force = document.getElementById("au-force-pw");
+    if (force) {
+      force.checked = true;
+    }
+    clearAddUserFieldErrors();
+    if (card) {
+      card.classList.remove("auth-card--shake");
+    }
+    m.hidden = false;
+    m.classList.add("is-open");
+  }
+
+  function closeAddUserModal() {
+    var m = document.getElementById("admin-add-user-modal");
+    if (m) {
+      m.classList.remove("is-open");
+      m.hidden = true;
+    }
+  }
+
+  function setAuFieldErr(id, msg) {
+    var el = document.getElementById(id);
+    if (el) {
+      el.textContent = msg || "";
+    }
+    var wrap = el && el.closest && el.closest(".field");
+    if (wrap) {
+      wrap.classList.toggle("field--error", !!msg);
+    }
+  }
+
+  function clearAddUserFieldErrors() {
+    ["au-err-name", "au-err-email", "au-err-password", "au-err-password2"].forEach(function (id) {
+      setAuFieldErr(id, "");
+    });
   }
 
   function readMessages() {
@@ -219,7 +274,8 @@
         if (!u) {
           return;
         }
-        var next = u.role === "admin" ? "client" : "admin";
+        var next =
+          u.role === "admin" ? "client" : u.role === "client" ? "employee" : "admin";
         openModal("Change role", "Set " + (u.email || "") + " to role: " + next + "?", function () {
           AgencyAuth.updateUser(id, { role: next });
           AgencyAuth.showToast("Role updated.", "success");
@@ -231,16 +287,44 @@
     host.querySelectorAll(".admin-act-del").forEach(function (btn) {
       btn.addEventListener("click", function () {
         var id = btn.getAttribute("data-id");
-        openModal("Delete user", "Permanently remove this user? This cannot be undone.", function () {
-          var next = AgencyAuth.readUsers().filter(function (x) {
-            return x.id !== id;
-          });
-          AgencyAuth.writeUsers(next);
-          AgencyAuth.showToast("User deleted.", "info");
-          renderUsersTable(document.getElementById("admin-user-search").value);
-          renderOverview();
-          fillProjectClientSelect();
-        });
+        var me = AgencyAuth.getCurrentUser();
+        if (me && me.id === id) {
+          AgencyAuth.showToast("You cannot delete your own account.", "error");
+          return;
+        }
+        var victim = null;
+        var all = AgencyAuth.readUsers();
+        for (var i = 0; i < all.length; i++) {
+          if (all[i].id === id) {
+            victim = all[i];
+            break;
+          }
+        }
+        var disp = victim ? victim.name || victim.email || "this user" : "this user";
+        openModal(
+          "Delete user",
+          "Are you sure you want to delete " + disp + "'s account? This action cannot be undone.",
+          function () {
+            var next = AgencyAuth.readUsers().filter(function (x) {
+              return x.id !== id;
+            });
+            AgencyAuth.writeUsers(next);
+            try {
+              var raw = localStorage.getItem(AgencyAuth.STORAGE_SESSION);
+              if (raw) {
+                var s = JSON.parse(raw);
+                if (s && s.userId === id) {
+                  AgencyAuth.destroySession();
+                }
+              }
+            } catch (e) {}
+            AgencyAuth.showToast("Account deleted. " + disp + " has been removed.", "success");
+            renderUsersTable(document.getElementById("admin-user-search").value);
+            renderOverview();
+            fillProjectClientSelect();
+          },
+          { confirmLabel: "Delete Account", destructive: true }
+        );
       });
     });
   }
@@ -252,7 +336,7 @@
     }
     sel.innerHTML = AgencyAuth.readUsers()
       .filter(function (u) {
-        return u.role === "client";
+        return u.role === "client" || u.role === "employee";
       })
       .map(function (u) {
         return '<option value="' + escapeHtml(u.id) + '">' + escapeHtml(u.name || u.email) + "</option>";
@@ -431,26 +515,92 @@
   });
 
   document.getElementById("admin-add-user-toggle").addEventListener("click", function () {
-    var f = document.getElementById("admin-add-user-form");
-    f.style.display = f.style.display === "none" ? "block" : "none";
+    openAddUserModal();
   });
+
+  document.getElementById("admin-add-user-cancel").addEventListener("click", closeAddUserModal);
+  document.getElementById("admin-add-user-modal-backdrop").addEventListener("click", closeAddUserModal);
 
   document.getElementById("admin-create-user-form").addEventListener("submit", function (e) {
     e.preventDefault();
-    var name = document.getElementById("au-name").value.trim();
-    var email = document.getElementById("au-email").value.trim();
-    var company = document.getElementById("au-company").value.trim();
-    var role = document.getElementById("au-role").value;
-    var password = document.getElementById("au-password").value;
-    AgencyAuth.registerUser(name, email, password, company, "").then(function (res) {
-      if (!res.success) {
-        AgencyAuth.showToast(res.error, "error");
-        return;
+    var card = document.getElementById("admin-add-user-modal-card");
+    var nameEl = document.getElementById("au-name");
+    var emailEl = document.getElementById("au-email");
+    var companyEl = document.getElementById("au-company");
+    var phoneEl = document.getElementById("au-phone");
+    var roleEl = document.getElementById("au-role");
+    var pwEl = document.getElementById("au-password");
+    var pw2El = document.getElementById("au-password2");
+    var forceEl = document.getElementById("au-force-pw");
+    var name = (nameEl && nameEl.value.trim()) || "";
+    var email = (emailEl && emailEl.value.trim()) || "";
+    var company = (companyEl && companyEl.value.trim()) || "";
+    var phone = (phoneEl && phoneEl.value.trim()) || "";
+    var role = (roleEl && roleEl.value) || "client";
+    var password = (pwEl && pwEl.value) || "";
+    var password2 = (pw2El && pw2El.value) || "";
+    var forcePw = forceEl && forceEl.checked;
+    clearAddUserFieldErrors();
+    if (card) {
+      card.classList.remove("auth-card--shake");
+    }
+    var ok = true;
+    if (!name) {
+      setAuFieldErr("au-err-name", "Full name is required.");
+      ok = false;
+    }
+    if (!validateEmail(email)) {
+      setAuFieldErr("au-err-email", "Enter a valid email address.");
+      ok = false;
+    }
+    if (!password || password.length < 8) {
+      setAuFieldErr("au-err-password", "Temporary password must be at least 8 characters.");
+      ok = false;
+    }
+    if (password !== password2) {
+      setAuFieldErr("au-err-password2", "Passwords do not match.");
+      ok = false;
+    }
+    var emLower = email.toLowerCase();
+    var users = AgencyAuth.readUsers();
+    for (var d = 0; d < users.length; d++) {
+      if ((users[d].email || "").toLowerCase() === emLower) {
+        setAuFieldErr("au-err-email", "An account with this email already exists.");
+        ok = false;
+        break;
       }
-      AgencyAuth.updateUser(res.user.id, { role: role });
-      AgencyAuth.showToast("User created.", "success");
-      document.getElementById("admin-create-user-form").reset();
-      document.getElementById("admin-add-user-form").style.display = "none";
+    }
+    if (!ok) {
+      if (card) {
+        card.classList.add("auth-card--shake");
+      }
+      return;
+    }
+    AgencyAuth.hashPassword(password).then(function (hash) {
+      var now = new Date().toISOString();
+      var user = {
+        id: "user_" + Date.now(),
+        name: name,
+        email: emLower,
+        password: hash,
+        company: company,
+        phone: phone,
+        role: role,
+        forcePasswordChange: !!forcePw,
+        createdAt: now,
+        avatar: null,
+        projects: [],
+        notes: [],
+        messages: [],
+        preferredContact: "Email",
+      };
+      users.push(user);
+      AgencyAuth.writeUsers(users);
+      AgencyAuth.showToast(
+        "Account created for " + name + ". Share their temporary password with them securely.",
+        "success"
+      );
+      closeAddUserModal();
       renderUsersTable(document.getElementById("admin-user-search").value);
       fillProjectClientSelect();
       renderOverview();
